@@ -1,0 +1,40 @@
+name: Build and Push Docker Image to ECR
+
+on:
+  push:
+    branches: main
+  workflow_dispatch:
+
+env:
+  ECR_REPOSITORY: from-the-hart
+  ECR_REGISTRY: public.ecr.aws/u0m6p0o9
+
+jobs:
+  build-and-push-to-ecr:
+    runs-on: ubuntu-latest
+    environment: dev
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to Amazon ECR Public
+        run: |
+          docker build -t ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }} .
+          docker tag ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }} ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
+
+          # Push the Docker image
+          docker push ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}:latest
