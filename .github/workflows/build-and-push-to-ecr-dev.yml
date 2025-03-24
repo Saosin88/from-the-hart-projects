@@ -29,6 +29,6 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR Public
         run: |
-          docker build -t ${{ secrets..ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} .
-          docker tag ${{ secrets..ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} ${{ secrets..ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest
-          docker push ${{ secrets..ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest
+          docker build -t ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} .
+          docker tag ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest
+          docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest
