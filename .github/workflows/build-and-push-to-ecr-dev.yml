@@ -31,6 +31,4 @@ jobs:
         run: |
           docker build -t ${{ secrets..ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} .
           docker tag ${{ secrets..ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} ${{ secrets..ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest
-
-          # Push the Docker image
           docker push ${{ secrets..ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest
