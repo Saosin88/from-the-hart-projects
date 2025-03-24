@@ -24,5 +24,6 @@ export const handler = async (
     console.log("Fastify app successfully initialized");
   }
 
+  console.log("Event:", JSON.stringify(event));
   return proxy(event, context);
 };
