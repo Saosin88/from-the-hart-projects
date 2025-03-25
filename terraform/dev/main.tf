@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "from_the_hart_projects_lambda_function" {
-  function_name = "from-the-hart-projects"
+  function_name = "from-the-hart-projects-dev"
   package_type  = "Image"
   image_uri     = "709961728029.dkr.ecr.af-south-1.amazonaws.com/from-the-hart-projects:latest-dev"
   timeout       = 10
