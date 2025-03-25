@@ -12,7 +12,7 @@ resource "aws_apigatewayv2_integration" "from_the_hart_projects_integration" {
   integration_uri        = aws_lambda_function.from_the_hart_projects_lambda_function.invoke_arn
   integration_type       = "AWS_PROXY"
   integration_method     = "POST"
-  payload_format_version = "2.0"
+  payload_format_version = "1.0"
 }
 
 resource "aws_apigatewayv2_route" "from_the_hart_projects_get_route" {
