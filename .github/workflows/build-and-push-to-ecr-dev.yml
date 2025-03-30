@@ -18,6 +18,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -29,7 +40,7 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR Public
         run: |
-          docker build -t ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} .
+          docker build -f Dockerfile.lambda -t ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} .
           docker tag ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-dev
           docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-dev
 
