@@ -27,7 +27,22 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: npm test
+        run: npm test -- --ci --reporters=default --reporters=jest-junit
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: success() || failure()
+        with:
+          name: test-results
+          path: jest-junit.xml
+
+      - name: Test Report
+        uses: dorny/test-reporter@v2
+        if: success() || failure()
+        with:
+          name: Jest Tests
+          path: junit.xml
+          reporter: jest-junit
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -72,4 +87,5 @@ jobs:
         run: |
           cd terraform/prod
           terraform init
-          terraform apply -auto-approve
+          terraform apply -auto-approve \
+            -var="lambda_image_uri=${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-prod"
