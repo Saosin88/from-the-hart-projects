@@ -1,0 +1,8 @@
+tests/
+node_modules/
+*.test.ts
+*.spec.ts
+__tests__/
+coverage/
+.git/
+.github/
