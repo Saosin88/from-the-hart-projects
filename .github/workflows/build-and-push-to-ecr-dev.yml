@@ -48,14 +48,19 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR Public
         run: |
+          # Generate unique image tag with timestamp
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
+
           docker build -f Dockerfile.lambda \
             --build-arg NODE_ENV=dev \
             --build-arg LOG_LEVEL=debug \
-            -t ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} .
+            -t ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:$TIMESTAMP .
 
-          docker tag ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-dev
+          docker tag ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:$TIMESTAMP
 
-          docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-dev
+          docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:$TIMESTAMP
+
+          echo "IMAGE_TAG=$TIMESTAMP" >> $GITHUB_ENV
 
   terraform-deploy:
     needs: build-and-push-to-ecr
@@ -86,10 +91,4 @@ jobs:
           cd terraform/dev
           terraform init
           terraform apply -auto-approve \
-            -var="lambda_image_uri=${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-dev"
-
-      - name: Update Lambda Code
-        run: |
-          aws lambda update-function-code \
-            --function-name from-the-hart-projects-dev \
-            --image-uri ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-dev
+            -var="lambda_image_uri=${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
