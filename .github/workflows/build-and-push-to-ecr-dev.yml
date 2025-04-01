@@ -48,8 +48,8 @@ jobs:
 
       - name: Build, tag, and push image to Amazon ECR Public
         run: |
-          # Generate unique image tag with timestamp
           TIMESTAMP=$(date +%Y%m%d%H%M%S)
+          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
 
           docker build -f Dockerfile.lambda \
             --build-arg NODE_ENV=dev \
@@ -70,4 +70,4 @@ jobs:
           cd terraform/dev
           terraform init
           terraform apply -auto-approve \
-            -var="lambda_image_uri=${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:$TIMESTAMP"
+            -var="lambda_image_uri=${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:${{ env.TIMESTAMP }}"
