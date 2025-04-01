@@ -27,6 +27,8 @@ export const getGitHubProjectsByUsername = async (
     username
   );
 
+  reply.header("Cache-Control", "public, max-age=600, s-maxage=600");
+
   if (!gitHubProjects || gitHubProjects.length === 0) {
     return reply.code(404).send({ error: "GitHub Projects not found" });
   }
