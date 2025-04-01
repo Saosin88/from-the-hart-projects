@@ -1,11 +1,6 @@
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
-import * as projectController from "../controllers/projectController";
-import {
-  ProjectSchema,
-  ProjectInputSchema,
-  ProjectUpdateSchema,
-  IdParamSchema,
-} from "../models/Project";
+import * as projectController from "../controllers/projectsController";
+import { GitHubProjectSchema, UsernameParamSchema } from "../models/Projects";
 
 const projectRoutes = async (
   fastify: FastifyInstance,
@@ -31,77 +26,20 @@ const projectRoutes = async (
     },
     handler: projectController.checkHealth,
   });
-  fastify.get("/", {
+
+  fastify.get("/github/:username", {
     schema: {
+      params: UsernameParamSchema,
       response: {
         200: {
           type: "object",
           properties: {
-            data: { type: "array", items: ProjectSchema },
+            data: { type: "array", items: GitHubProjectSchema },
           },
         },
       },
     },
-    handler: projectController.getProjects,
-  });
-
-  fastify.get("/:id", {
-    schema: {
-      params: IdParamSchema,
-      response: {
-        200: {
-          type: "object",
-          properties: {
-            data: ProjectSchema,
-          },
-        },
-      },
-    },
-    handler: projectController.getProjectById,
-  });
-
-  fastify.post("/", {
-    schema: {
-      body: ProjectInputSchema,
-      response: {
-        201: {
-          type: "object",
-          properties: {
-            data: ProjectSchema,
-          },
-        },
-      },
-    },
-    handler: projectController.addProject,
-  });
-
-  fastify.put("/:id", {
-    schema: {
-      params: IdParamSchema,
-      body: ProjectUpdateSchema,
-      response: {
-        200: {
-          type: "object",
-          properties: {
-            data: ProjectSchema,
-          },
-        },
-      },
-    },
-    handler: projectController.updateProject,
-  });
-
-  fastify.delete("/:id", {
-    schema: {
-      params: IdParamSchema,
-      response: {
-        204: {
-          type: "null",
-          description: "Project successfully deleted",
-        },
-      },
-    },
-    handler: projectController.deleteProject,
+    handler: projectController.getGitHubProjectsByUsername,
   });
 };
 

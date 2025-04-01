@@ -1,19 +1,20 @@
 # From The Hart Projects API
 
-A Fastify-based API for managing From The Hart projects.
+A Fastify-based API for managing From The Hart projects. This API is designed to support both traditional server deployments and serverless AWS Lambda deployments.
 
 ## Prerequisites
 
 - Node.js (v16 or higher)
 - npm or yarn
 - Docker (for containerized deployment)
+- AWS CLI (for Lambda deployment)
 
 ## Installation
 
 Clone the repository and install dependencies:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/Saosin88/from-the-hart-projects.git
 cd from-the-hart-projects
 npm install
 ```
@@ -82,6 +83,22 @@ Remove all images:
 docker rmi -f $(docker images -a -q)
 ```
 
+## AWS Lambda Deployment
+
+This project supports deployment as an AWS Lambda function:
+
+```bash
+# Build the Lambda Docker image
+docker build -f Dockerfile.lambda -t from-the-hart-projects-lambda .
+
+# Deploy using AWS CLI (requires proper AWS credentials)
+aws lambda update-function-code \
+  --function-name from-the-hart-projects \
+  --image-uri <your-ecr-repository-uri>:latest
+```
+
+The Lambda entry point is defined in `src/lambda.ts`.
+
 ## API Documentation
 
 Once the server is running, you can access the Swagger documentation at:
@@ -111,6 +128,25 @@ from-the-hart-projects/
 
 This project uses Fastify with the TypeBox type provider (@fastify/type-provider-typebox) for type-safe API development. It supports both traditional server deployments and serverless AWS Lambda deployments.
 
+## Testing
+
+Run tests with:
+
+```bash
+npm test
+```
+
+The project uses Jest for unit tests and includes coverage reporting.
+
+## Infrastructure
+
+Key AWS resources used:
+
+- API Gateway for REST API endpoints
+- Lambda for serverless execution
+- CloudFront for edge caching and content delivery
+- IAM roles and policies for security
+
 ## Environment Variables
 
 The following environment variables can be set:
@@ -133,4 +169,10 @@ Please read our contributing guidelines before submitting pull requests.
 
 ## License
 
-This project is licensed under the [LICENSE NAME] - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contact
+
+Sheldon Hart - [LinkedIn](https://www.linkedin.com/in/sheldon-hart/)
+
+Project Link: [https://github.com/Saosin88/from-the-hart-projects.git](https://github.com/Saosin88/from-the-hart-projects.git)
