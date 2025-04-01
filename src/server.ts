@@ -9,9 +9,7 @@ const start = async () => {
       port: config.server.port,
       host: config.server.host,
     });
-    app.log.info(
-      `Server listening on ${config.server.host}:${config.server.port}`
-    );
+    app.log.info(`NODE_ENV: ${config.env}`);
   } catch (err) {
     app.log.error(err);
     process.exit(1);

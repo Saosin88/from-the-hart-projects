@@ -7,6 +7,14 @@ RUN npm run build
     
 FROM public.ecr.aws/lambda/nodejs:22
 WORKDIR ${LAMBDA_TASK_ROOT}
+
+ARG NODE_ENV=production
+ARG LOG_LEVEL=info
+
+ENV NODE_ENV=$NODE_ENV
+ENV LOG_LEVEL=$LOG_LEVEL
+
 COPY --from=builder /usr/app/dist/. ./
 COPY --from=builder /usr/app/node_modules ./node_modules
+COPY --from=builder /usr/app/src/public ./public
 CMD ["lambda.handler"]
