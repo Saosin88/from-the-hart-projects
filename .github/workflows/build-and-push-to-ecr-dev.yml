@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-push-to-ecr:
+  build-and-push-to-ecr-deploy-with-terraform:
     runs-on: ubuntu-latest
     environment: dev
 
@@ -60,35 +60,14 @@ jobs:
 
           docker push ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:$TIMESTAMP
 
-          echo "IMAGE_TAG=$TIMESTAMP" >> $GITHUB_ENV
-
-  terraform-deploy:
-    needs: build-and-push-to-ecr
-    runs-on: ubuntu-latest
-    environment: dev
-
-    permissions:
-      id-token: write
-      contents: read
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: "1.11.2"
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Deploy Dev Environment
         run: |
           cd terraform/dev
           terraform init
           terraform apply -auto-approve \
-            -var="lambda_image_uri=${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
+            -var="lambda_image_uri=${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:$TIMESTAMP"
