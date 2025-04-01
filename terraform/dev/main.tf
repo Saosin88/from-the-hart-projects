@@ -3,6 +3,12 @@ variable "lambda_image_uri" {
   type        = string
 }
 
+variable "deploy_timestamp" {
+  description = "Timestamp to force Lambda update"
+  type        = string
+  default     = "0"
+}
+
 resource "aws_lambda_function" "from_the_hart_projects_lambda_function" {
   function_name = "from-the-hart-projects-dev"
   package_type  = "Image"
@@ -10,6 +16,22 @@ resource "aws_lambda_function" "from_the_hart_projects_lambda_function" {
   memory_size   = 256
   timeout       = 10
   role          = data.terraform_remote_state.shared.outputs.from_the_hart_lambda_role_arn
+  
+  image_config {
+    command = ["lambda.handler"]
+  }
+  
+  lifecycle {
+    replace_triggered_by = [
+      null_resource.lambda_update_trigger.id
+    ]
+  }
+}
+
+resource "null_resource" "lambda_update_trigger" {
+  triggers = {
+    deploy_timestamp = var.deploy_timestamp
+  }
 }
 
 resource "aws_apigatewayv2_integration" "from_the_hart_projects_integration" {
