@@ -6,6 +6,19 @@ type IdParam = {
   id: string;
 };
 
+export const checkHealth = async (
+  request: FastifyRequest,
+  reply: FastifyReply
+) => {
+  return reply.code(200).send({
+    data: {
+      status: "ok",
+      uptime: process.uptime(),
+      timestamp: Date.now(),
+    },
+  });
+};
+
 export const getProjects = async (
   request: FastifyRequest,
   reply: FastifyReply

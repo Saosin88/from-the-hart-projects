@@ -18,15 +18,18 @@ const projectRoutes = async (
           type: "object",
           properties: {
             data: {
-              status: "ok",
-              uptime: process.uptime(),
-              timestamp: Date.now(),
+              type: "object",
+              properties: {
+                status: { type: "string" },
+                uptime: { type: "number" },
+                timestamp: { type: "number" },
+              },
             },
           },
         },
       },
     },
-    handler: projectController.getProjects,
+    handler: projectController.checkHealth,
   });
   fastify.get("/", {
     schema: {
