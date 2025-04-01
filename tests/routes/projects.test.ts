@@ -2,7 +2,6 @@ import { buildApp } from "../../src/app";
 
 describe("Project endpoints", () => {
   const app = buildApp();
-  let createdProjectId: string;
 
   beforeAll(async () => {
     await app.ready();
@@ -12,139 +11,66 @@ describe("Project endpoints", () => {
     await app.close();
   });
 
-  it("GET /projects returns projects list", async () => {
+  it("GET /projects/health returns health status information", async () => {
     const response = await app.inject({
       method: "GET",
-      url: "/projects",
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(JSON.parse(response.payload)).toHaveProperty("data");
-  });
-
-  it("POST /projects creates a new project", async () => {
-    const newProject = {
-      name: "Test Project",
-      description: "Project for testing",
-      startDate: "2023-09-01",
-      endDate: null,
-      status: "in-progress",
-      budget: 5000,
-    };
-
-    const response = await app.inject({
-      method: "POST",
-      url: "/projects",
-      payload: newProject,
-    });
-
-    expect(response.statusCode).toBe(201);
-    const responseBody = JSON.parse(response.payload);
-
-    // Updated assertions to check nested data object
-    expect(responseBody).toHaveProperty("data");
-    expect(responseBody.data).toHaveProperty("id");
-    expect(responseBody.data.name).toBe(newProject.name);
-    expect(responseBody.data.description).toBe(newProject.description);
-
-    // Save the ID from the nested data object
-    createdProjectId = responseBody.data.id;
-  });
-
-  it("GET /projects/:id returns a specific project", async () => {
-    // Skip this test if we couldn't create a project
-    if (!createdProjectId) {
-      return;
-    }
-
-    const response = await app.inject({
-      method: "GET",
-      url: `/projects/${createdProjectId}`,
+      url: "/projects/health",
     });
 
     expect(response.statusCode).toBe(200);
     const responseBody = JSON.parse(response.payload);
     expect(responseBody).toHaveProperty("data");
-    expect(responseBody.data).toHaveProperty("id", createdProjectId);
-    expect(responseBody.data).toHaveProperty("name");
-    expect(responseBody.data).toHaveProperty("description");
+
+    expect(responseBody.data).toHaveProperty("status");
+    expect(responseBody.data).toHaveProperty("uptime");
+    expect(responseBody.data).toHaveProperty("timestamp");
+
+    expect(typeof responseBody.data.status).toBe("string");
+    expect(responseBody.data.status).toBe("ok");
+    expect(typeof responseBody.data.uptime).toBe("number");
+    expect(typeof responseBody.data.timestamp).toBe("number");
   });
 
-  it("GET /projects/:id returns 404 for non-existent project", async () => {
+  it("GET /projects/github/Saosin88 returns structured GitHub projects list", async () => {
     const response = await app.inject({
       method: "GET",
-      url: "/projects/non-existent-id",
-    });
-
-    expect(response.statusCode).toBe(404);
-  });
-
-  it("PUT /projects/:id updates a project", async () => {
-    // Skip this test if we couldn't create a project
-    if (!createdProjectId) {
-      return;
-    }
-
-    const updatedProject = {
-      name: "Updated Test Project",
-      description: "Updated description",
-    };
-
-    const response = await app.inject({
-      method: "PUT",
-      url: `/projects/${createdProjectId}`,
-      payload: updatedProject,
+      url: "/projects/github/Saosin88",
     });
 
     expect(response.statusCode).toBe(200);
     const responseBody = JSON.parse(response.payload);
     expect(responseBody).toHaveProperty("data");
-    expect(responseBody.data).toHaveProperty("id", createdProjectId);
-    expect(responseBody.data.name).toBe(updatedProject.name);
-    expect(responseBody.data.description).toBe(updatedProject.description);
+    expect(Array.isArray(responseBody.data)).toBe(true);
+    expect(responseBody.data.length).toBeGreaterThan(0);
+
+    responseBody.data.forEach((repo) => {
+      expect(repo).toHaveProperty("id");
+      expect(typeof repo.id).toBe("number");
+      expect(repo).toHaveProperty("name");
+      expect(typeof repo.name).toBe("string");
+      expect(repo).toHaveProperty("html_url");
+      expect(typeof repo.html_url).toBe("string");
+      expect(repo).toHaveProperty("stargazers_count");
+      expect(typeof repo.stargazers_count).toBe("number");
+
+      expect(repo).toHaveProperty("description");
+      expect(repo).toHaveProperty("language");
+      expect(repo).toHaveProperty("updated_at");
+    });
   });
 
-  it("PUT /projects/:id returns 404 for non-existent project", async () => {
+  it("GET /projects/github/non-existent-user returns 404 error", async () => {
     const response = await app.inject({
-      method: "PUT",
-      url: "/projects/non-existent-id",
-      payload: {
-        name: "Updated Test Project",
-        description: "Updated description",
-      },
-    });
-
-    expect(response.statusCode).toBe(404);
-  });
-
-  it("DELETE /projects/:id deletes a project", async () => {
-    // Skip this test if we couldn't create a project
-    if (!createdProjectId) {
-      return;
-    }
-
-    const response = await app.inject({
-      method: "DELETE",
-      url: `/projects/${createdProjectId}`,
-    });
-
-    expect(response.statusCode).toBe(204);
-
-    // Verify the project is gone
-    const getResponse = await app.inject({
       method: "GET",
-      url: `/projects/${createdProjectId}`,
-    });
-
-    expect(getResponse.statusCode).toBe(404);
-  });
-
-  it("DELETE /projects/:id returns 404 for non-existent project", async () => {
-    const response = await app.inject({
-      method: "DELETE",
-      url: "/projects/non-existent-id",
+      url: "/projects/github/this-user-does-not-exist-12345",
     });
 
     expect(response.statusCode).toBe(404);
+    const responseBody = JSON.parse(response.payload);
+
+    expect(responseBody).toHaveProperty("error");
+    expect(responseBody.error).toBe("GitHub Projects not found");
+
+    expect(responseBody).not.toHaveProperty("data");
   });
 });

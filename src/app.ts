@@ -13,9 +13,5 @@ export function buildApp(): FastifyInstance {
 
   app.register(projectRoutes, { prefix: "/projects" });
 
-  app.get("/", async () => {
-    return { status: "ok", message: "From The Hart Projects API" };
-  });
-
   return app;
 }

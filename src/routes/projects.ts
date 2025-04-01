@@ -1,87 +1,45 @@
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
-import * as projectController from "../controllers/projectController";
-import {
-  ProjectSchema,
-  ProjectInputSchema,
-  ProjectUpdateSchema,
-  IdParamSchema,
-} from "../models/Project";
+import * as projectController from "../controllers/projectsController";
+import { GitHubProjectSchema, UsernameParamSchema } from "../models/Projects";
 
 const projectRoutes = async (
   fastify: FastifyInstance,
   options: FastifyPluginOptions
 ) => {
-  fastify.get("/", {
+  fastify.get("/health", {
     schema: {
       response: {
         200: {
           type: "object",
           properties: {
-            data: { type: "array", items: ProjectSchema },
+            data: {
+              type: "object",
+              properties: {
+                status: { type: "string" },
+                uptime: { type: "number" },
+                timestamp: { type: "number" },
+              },
+            },
           },
         },
       },
     },
-    handler: projectController.getProjects,
+    handler: projectController.checkHealth,
   });
 
-  fastify.get("/:id", {
+  fastify.get("/github/:username", {
     schema: {
-      params: IdParamSchema,
+      params: UsernameParamSchema,
       response: {
         200: {
           type: "object",
           properties: {
-            data: ProjectSchema,
+            data: { type: "array", items: GitHubProjectSchema },
           },
         },
       },
     },
-    handler: projectController.getProjectById,
-  });
-
-  fastify.post("/", {
-    schema: {
-      body: ProjectInputSchema,
-      response: {
-        201: {
-          type: "object",
-          properties: {
-            data: ProjectSchema,
-          },
-        },
-      },
-    },
-    handler: projectController.addProject,
-  });
-
-  fastify.put("/:id", {
-    schema: {
-      params: IdParamSchema,
-      body: ProjectUpdateSchema,
-      response: {
-        200: {
-          type: "object",
-          properties: {
-            data: ProjectSchema,
-          },
-        },
-      },
-    },
-    handler: projectController.updateProject,
-  });
-
-  fastify.delete("/:id", {
-    schema: {
-      params: IdParamSchema,
-      response: {
-        204: {
-          type: "null",
-          description: "Project successfully deleted",
-        },
-      },
-    },
-    handler: projectController.deleteProject,
+    handler: projectController.getGitHubProjectsByUsername,
   });
 };
 

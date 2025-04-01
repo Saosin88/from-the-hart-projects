@@ -1,7 +1,6 @@
 {
   "name": "from-the-hart-projects",
-  "version": "1.0.0",
-  "description": "RESTful API for managing projects",
+  "description": "Projects API for From The Hart",
   "main": "dist/server.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",

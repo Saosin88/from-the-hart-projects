@@ -6,7 +6,6 @@ export function createLoggerConfig(
 ): FastifyLoggerOptions {
   const config: FastifyLoggerOptions = {
     level,
-    // Configure request ID generation (used for 'reqId' field)
     genReqId: (req) => {
       return (
         (req.headers["x-request-id"] as string) ||
@@ -20,7 +19,6 @@ export function createLoggerConfig(
           url: request.url,
           path: request.raw.url,
           headers: request.headers,
-          body: request.body,
         };
       },
       res(response) {
