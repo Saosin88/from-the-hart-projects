@@ -11,6 +11,23 @@ const projectRoutes = async (
   fastify: FastifyInstance,
   options: FastifyPluginOptions
 ) => {
+  fastify.get("/health", {
+    schema: {
+      response: {
+        200: {
+          type: "object",
+          properties: {
+            data: {
+              status: "ok",
+              uptime: process.uptime(),
+              timestamp: Date.now(),
+            },
+          },
+        },
+      },
+    },
+    handler: projectController.getProjects,
+  });
   fastify.get("/", {
     schema: {
       response: {

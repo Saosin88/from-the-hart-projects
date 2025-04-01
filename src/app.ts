@@ -13,11 +13,5 @@ export function buildApp(): FastifyInstance {
 
   app.register(projectRoutes, { prefix: "/projects" });
 
-  app.get("/health", async () => ({
-    status: "ok",
-    uptime: process.uptime(),
-    timestamp: Date.now(),
-  }));
-
   return app;
 }
