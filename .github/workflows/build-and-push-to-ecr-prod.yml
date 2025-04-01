@@ -86,5 +86,10 @@ jobs:
           cd terraform/prod
           terraform init
           terraform apply -auto-approve \
-            -var="lambda_image_uri=${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-prod" \
-            -var="deploy_timestamp=$(date +%s)"
+            -var="lambda_image_uri=${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-prod"
+
+      - name: Update Lambda Code
+        run: |
+          aws lambda update-function-code \
+            --function-name from-the-hart-projects-prod \
+            --image-uri ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-prod
