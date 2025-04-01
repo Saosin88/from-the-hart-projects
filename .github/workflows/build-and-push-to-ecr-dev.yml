@@ -87,3 +87,4 @@ jobs:
           terraform init
           terraform apply -auto-approve \
             -var="lambda_image_uri=${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }}:latest-dev"
+            -var="deploy_timestamp=$(date +%s)"
