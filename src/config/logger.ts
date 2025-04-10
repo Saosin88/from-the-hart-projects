@@ -1,51 +1,64 @@
+import pino from "pino";
 import { FastifyLoggerOptions } from "fastify";
+import { config } from ".";
 
-export function createLoggerConfig(
-  env: string,
-  level: string
-): FastifyLoggerOptions {
-  const config: FastifyLoggerOptions = {
-    level,
-    genReqId: (req) => {
-      return (
-        (req.headers["x-request-id"] as string) ||
-        `req-${Math.random().toString(36).substring(2, 10)}`
-      );
+const prettyPrintConfig = {
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+      translateTime: "SYS:standard",
+      ignore: "pid,hostname",
     },
-    serializers: {
-      req(request) {
-        return {
-          method: request.method,
-          url: request.url,
-          path: request.raw.url,
-          headers: request.headers,
-        };
-      },
-      res(response) {
-        return {
-          statusCode: response.statusCode,
-        };
-      },
-      err(error) {
-        return {
-          type: error.name,
-          message: error.message,
-          stack: error.stack || "",
-        };
-      },
-    },
+  },
+};
 
-    ...(env === "local" && {
-      transport: {
-        target: "pino-pretty",
-        options: {
-          colorize: true,
-          translateTime: "SYS:standard",
-          ignore: "pid,hostname",
+const generateRequestId = (req: any): string =>
+  (req.headers["x-request-id"] as string) ||
+  `req-${Math.random().toString(36).substring(2, 10)}`;
+
+const loggerFactory = {
+  getLogger() {
+    return pino({
+      level: config.logLevel || "debug",
+      ...(config.env === "local" && prettyPrintConfig),
+    });
+  },
+
+  createFastifyConfig(): FastifyLoggerOptions {
+    const env = config.env || "local";
+    const level = config.logLevel || "debug";
+
+    return {
+      level,
+      genReqId: generateRequestId,
+      serializers: {
+        req(request) {
+          return {
+            method: request.method,
+            url: request.url,
+            path: request.raw.url,
+            headers: request.headers,
+            body: request.body,
+          };
+        },
+        res(response) {
+          return {
+            statusCode: response.statusCode,
+          };
+        },
+        err(error) {
+          return {
+            type: error.name,
+            message: error.message,
+            stack: error.stack || "",
+          };
         },
       },
-    }),
-  };
+      ...(env === "local" && prettyPrintConfig),
+    };
+  },
+};
 
-  return config;
-}
+export const logger = loggerFactory.getLogger();
+export const fastifyLogger = loggerFactory.createFastifyConfig();

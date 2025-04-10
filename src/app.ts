@@ -1,12 +1,12 @@
 import fastify, { FastifyInstance } from "fastify";
 import { registerSwagger } from "./config/swagger";
 
-import config from "./config";
+import { fastifyLogger } from "./config/logger";
 import projectRoutes from "./routes/projects";
 
 export function buildApp(): FastifyInstance {
   const app = fastify({
-    logger: config.logger,
+    logger: fastifyLogger,
   });
 
   registerSwagger(app);
