@@ -26,16 +26,12 @@ resource "aws_apigatewayv2_route" "from_the_hart_projects_get_route" {
 
   route_key          = "ANY /projects"
   target             = "integrations/${aws_apigatewayv2_integration.from_the_hart_projects_integration.id}"
-  authorizer_id      = data.terraform_remote_state.shared.outputs.prod_api_gateway_cloudfront_token_authorizer_id
-  authorization_type = "CUSTOM"
 }
 
 resource "aws_apigatewayv2_route" "from_the_hart_projects_proxy_route" {
   api_id             = data.terraform_remote_state.shared.outputs.prod_api_gateway_id
   route_key          = "ANY /projects/{proxy+}"
   target             = "integrations/${aws_apigatewayv2_integration.from_the_hart_projects_integration.id}"
-  authorizer_id      = data.terraform_remote_state.shared.outputs.prod_api_gateway_cloudfront_token_authorizer_id
-  authorization_type = "CUSTOM"
 }
 
 
