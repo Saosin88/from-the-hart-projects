@@ -12,6 +12,14 @@ resource "aws_lambda_function" "from_the_hart_projects_lambda_function" {
   role          = data.terraform_remote_state.shared.outputs.from_the_hart_lambda_role_arn
 }
 
+resource "aws_lambda_function_url" "from_the_hart_projects_function_url" {
+  function_name      = aws_lambda_function.from_the_hart_projects_lambda_function.function_name
+  authorization_type = "NONE"
+  depends_on = [
+    aws_lambda_function.from_the_hart_projects_lambda_function,
+  ]
+}
+
 resource "aws_apigatewayv2_integration" "from_the_hart_projects_integration" {
   api_id = data.terraform_remote_state.shared.outputs.dev_api_gateway_id
 
