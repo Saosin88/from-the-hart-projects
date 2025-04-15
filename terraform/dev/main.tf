@@ -14,7 +14,7 @@ resource "aws_lambda_function" "from_the_hart_projects_lambda_function" {
 
 resource "aws_lambda_function_url" "from_the_hart_projects_function_url" {
   function_name      = aws_lambda_function.from_the_hart_projects_lambda_function.function_name
-  authorization_type = "NONE"
+  authorization_type = "AWS_IAM"
   depends_on = [
     aws_lambda_function.from_the_hart_projects_lambda_function,
   ]
