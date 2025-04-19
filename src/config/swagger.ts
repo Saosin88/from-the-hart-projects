@@ -8,7 +8,7 @@ export function registerSwagger(app: FastifyInstance): void {
   app.register(fastifySwagger, {
     swagger: {
       info: {
-        title: "From The Hart Auth API",
+        title: "From The Hart Projects API",
         version: "1.0.0",
       },
       schemes: ["http", "https"],
@@ -27,7 +27,7 @@ export function registerSwagger(app: FastifyInstance): void {
   const logoContent = fs.readFileSync(logoPath);
 
   app.register(fastifySwaggerUi, {
-    routePrefix: "/auth/documentation",
+    routePrefix: "/projects/documentation",
     uiConfig: {
       docExpansion: "list",
       deepLinking: true,
