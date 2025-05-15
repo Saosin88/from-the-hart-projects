@@ -1,0 +1,80 @@
+{
+  "info": {
+    "name": "Projects API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Postman collection for From The Hart Projects API"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/projects/health",
+          "host": ["{{base_url}}"],
+          "path": ["projects", "health"]
+        }
+      }
+    },
+    {
+      "name": "Get GitHub Projects By Username",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/projects/github/:username",
+          "host": ["{{base_url}}"],
+          "path": ["projects", "github", ":username"],
+          "variable": [
+            {
+              "key": "username",
+              "value": "Saosin88"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://dev-api.fromthehart.tech",
+      "type": "string"
+    }
+  ],
+  "_postman_exported_environments": [
+    {
+      "name": "Dev",
+      "values": [
+        {
+          "key": "base_url",
+          "value": "https://dev-api.fromthehart.tech",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "name": "Prod",
+      "values": [
+        {
+          "key": "base_url",
+          "value": "https://api.fromthehart.tech",
+          "enabled": true
+        }
+      ]
+    },
+    {
+      "name": "Local",
+      "values": [
+        { "key": "base_url", "value": "http://localhost:8080", "enabled": true }
+      ]
+    },
+    {
+      "name": "Local Cloudflare Worker",
+      "values": [
+        { "key": "base_url", "value": "http://localhost:8787", "enabled": true }
+      ]
+    }
+  ]
+}
