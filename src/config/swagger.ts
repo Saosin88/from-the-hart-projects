@@ -6,14 +6,17 @@ import fs from "fs";
 
 export function registerSwagger(app: FastifyInstance): void {
   app.register(fastifySwagger, {
-    swagger: {
+    openapi: {
       info: {
         title: "From The Hart Projects API",
         version: "1.0.0",
+        description:
+          "API for managing and displaying projects in the From The Hart ecosystem.",
       },
-      schemes: ["http", "https"],
-      consumes: ["application/json"],
-      produces: ["application/json"],
+      servers: [
+        { url: "http://localhost:8080", description: "Local server" },
+        // Add your production server here if needed
+      ],
     },
   });
 
