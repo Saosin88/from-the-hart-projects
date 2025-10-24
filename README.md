@@ -21,7 +21,7 @@ The From The Hart Projects API provides endpoints for managing and displaying pr
 - **Framework**: Fastify with TypeScript
 - **Type Safety**: TypeBox (@fastify/type-provider-typebox)
 - **Documentation**: Swagger/OpenAPI
-- **Testing**: Jest for unit tests
+- **Testing**: Vitest for unit tests
 - **Containerization**: Docker for deployments
 - **Serverless**: AWS Lambda container support
 - **Infrastructure**: Terraform (managed in the `from-the-hart-infrastructure` repository)
@@ -89,7 +89,19 @@ Run tests with:
 npm test
 ```
 
-The project uses Jest for unit tests and includes coverage reporting.
+The project uses Vitest for unit tests.
+
+Watch mode:
+
+```bash
+npm run test:watch
+```
+
+Generate coverage locally:
+
+```bash
+npm run test:coverage
+```
 
 ## 🌐 Infrastructure
 
@@ -104,6 +116,7 @@ This service is part of the "From The Hart" multi-cloud architecture managed wit
 - **API Gateway Integration**: Through Cloudflare Workers reverse proxy
 
 The infrastructure is managed using Terraform with modules for reusability:
+
 - State is stored remotely in an S3 bucket (`from-the-hart-terraform`)
 - Cloudflare Workers provide API reverse proxying and routing
 
