@@ -43,7 +43,7 @@ describe("Project endpoints", () => {
     expect(Array.isArray(responseBody.data)).toBe(true);
     expect(responseBody.data.length).toBeGreaterThan(0);
 
-    responseBody.data.forEach((repo) => {
+    responseBody.data.forEach((repo: any) => {
       expect(repo).toHaveProperty("id");
       expect(typeof repo.id).toBe("number");
       expect(repo).toHaveProperty("name");
