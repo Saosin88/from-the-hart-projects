@@ -1,8 +1,8 @@
-import { GitHubProject } from "../models/Projects";
+import { Repository } from "../models/Repository";
 
-export const getGitHubProjectsByUsername = async (
+export const getRepositoriesByUsername = async (
   username: string
-): Promise<GitHubProject[]> => {
+): Promise<Repository[]> => {
   try {
     const apiUrl = `https://api.github.com/users/${username}/repos`;
 
@@ -19,7 +19,7 @@ export const getGitHubProjectsByUsername = async (
     const data = await response.json();
 
     return data.map(
-      (repo: any): GitHubProject => ({
+      (repo: any): Repository => ({
         id: repo.id,
         name: repo.name,
         description: repo.description || "",
@@ -31,7 +31,7 @@ export const getGitHubProjectsByUsername = async (
     );
   } catch (error) {
     console.error(
-      `Error fetching GitHub projects for user ${username}:`,
+      `Error fetching GitHub repositories for user ${username}:`,
       error
     );
     throw error;

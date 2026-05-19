@@ -33,5 +33,4 @@ A public Git-hosted repository fetched via the Git host API — the core domain 
 
 ## Flagged Ambiguities
 
-- **"GitHubProject" / "GitHub projects" vs. Repository:** The codebase uses `GitHubProject`, `GitHubProjectSchema`, `getGitHubProjectsByUsername`, and "GitHub projects" in OpenAPI descriptions. The canonical domain term is **Repository**. → See [TODO.md](../TODO.md#14-projects-service--repository-terminology-rename).
-- **Error envelope mismatch:** This service returns `{ error: "..." }` (flat string) while the canonical **Error Envelope** (defined in gateway CONTEXT.md) is `{ error: { message: "..." } }`. → See [TODO.md](../TODO.md#12-projects-service--error-envelope-mismatch).
+- *(None currently — all resolved.)*

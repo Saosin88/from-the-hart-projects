@@ -1,6 +1,14 @@
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import * as projectController from "../controllers/projectsController";
-import { GitHubProjectSchema, UsernameParamSchema } from "../models/Projects";
+import { RepositorySchema } from "../models/Repository";
+import { Type } from "@sinclair/typebox";
+
+const UsernameParamSchema = Type.Object({
+  username: Type.String({
+    description: "GitHub username to fetch repositories for",
+    minLength: 1,
+  }),
+});
 
 const projectRoutes = async (
   fastify: FastifyInstance,
@@ -58,8 +66,8 @@ const projectRoutes = async (
 
   fastify.get("/github/:username", {
     schema: {
-      description: "Get public GitHub projects for a given username.",
-      summary: "List GitHub projects by username",
+      description: "Get public GitHub repositories for a given username.",
+      summary: "List GitHub repositories by username",
       params: UsernameParamSchema,
       response: {
         200: {
@@ -67,8 +75,8 @@ const projectRoutes = async (
           properties: {
             data: {
               type: "array",
-              items: GitHubProjectSchema,
-              description: "List of GitHub projects for the user",
+              items: RepositorySchema,
+              description: "List of GitHub repositories for the user",
             },
           },
           required: ["data"],
@@ -100,7 +108,7 @@ const projectRoutes = async (
         },
       },
     },
-    handler: projectController.getGitHubProjectsByUsername,
+    handler: projectController.getRepositoriesByUsername,
   });
 };
 

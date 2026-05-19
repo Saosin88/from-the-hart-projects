@@ -69,7 +69,7 @@ describe("Project endpoints", () => {
     const responseBody = JSON.parse(response.payload);
 
     expect(responseBody).toHaveProperty("error");
-    expect(responseBody.error).toBe("GitHub Projects not found");
+    expect(responseBody.error.message).toBe("Repositories not found");
 
     expect(responseBody).not.toHaveProperty("data");
   });

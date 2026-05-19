@@ -1,14 +1,14 @@
 import { Type, Static } from "@sinclair/typebox";
 
-export const GitHubProjectSchema = Type.Object({
+export const RepositorySchema = Type.Object({
   id: Type.Number({
-    description: "Unique project ID from GitHub",
+    description: "Unique repository ID from GitHub",
   }),
   name: Type.String({
     description: "Repository name",
   }),
   description: Type.String({
-    description: "Short project description",
+    description: "Short repository description",
   }),
   html_url: Type.String({
     description: "URL to the GitHub repository",
@@ -26,11 +26,4 @@ export const GitHubProjectSchema = Type.Object({
   }),
 });
 
-export type GitHubProject = Static<typeof GitHubProjectSchema>;
-
-export const UsernameParamSchema = Type.Object({
-  username: Type.String({
-    description: "GitHub username to fetch projects for",
-    minLength: 1,
-  }),
-});
+export type Repository = Static<typeof RepositorySchema>;
