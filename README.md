@@ -154,7 +154,7 @@ from-the-hart-projects/
 │   ├── controllers/        # API request handlers
 │   │   └── projectController.ts
 │   ├── models/             # Data models with TypeBox schemas
-│   │   └── Project.ts
+│   │   └── Repository.ts
 │   ├── public/             # Static assets and files
 │   ├── routes/             # API route definitions
 │   │   └── project.ts
