@@ -52,6 +52,7 @@ jobs:
           echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV
 
           docker build -f Dockerfile.lambda \
+            --provenance=false \
             --build-arg NODE_ENV=dev \
             --build-arg LOG_LEVEL=debug \
             -t ${{ secrets.ECR_REGISTRY }}/${{ vars.ECR_REPOSITORY }} .
