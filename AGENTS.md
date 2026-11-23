@@ -73,10 +73,19 @@ src/
 
 ## Key Patterns
 
-- Same Fastify patterns as auth service: `buildApp()`, TypeBox schemas, thin controllers
-- Caching via response header: `Cache-Control: public, max-age=86400`
-- Lambda adapter: `@fastify/aws-lambda` transforms API Gateway events → Fastify requests
-- Cold start mitigation: module-level `let app` cache; initialized once on first invocation
+- **`buildApp()` factory** — see master AGENTS.md "Code Patterns → Fastify Service"
+- **Lambda entry point** — same code, different entry:
+  ```typescript
+  import { awsLambdaFastify } from "@fastify/aws-lambda";
+  export const handler = awsLambdaFastify(buildApp());
+  ```
+- **TypeBox everywhere** — schemas define both runtime validation AND OpenAPI docs
+- **Controllers are thin** — validate input, call service, format response
+- **Consistent response shapes:**
+  - Success: `{ data: { ... } }`
+  - Error: `{ error: { message: "..." } }`
+- **Caching:** `Cache-Control: public, max-age=86400` on project list responses
+- **Cold start mitigation:** module-level `let app` cache; initialized once on first invocation
 
 ## Boundaries
 
